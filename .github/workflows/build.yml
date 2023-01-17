@@ -44,5 +44,5 @@
             context: .
             file: ./Dockerfile
             push: true
-            tags: ${{ secrets.JFROG_URL }}/:latest
+            tags: ${{ secrets.JFROG_URL }}/test:latest
 
