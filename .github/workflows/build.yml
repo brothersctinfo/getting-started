@@ -44,5 +44,5 @@
             context: .
             file: ./Dockerfile
             push: true
-            tags: ${{ secrets.JFROG_URL }}/${{ secrets.JFROG_USERNAME }}/tracy:v01
+            tags: ${{ secrets.JFROG_URL }}/${{ secrets.JFROG_USERNAME }}/k8s:v01
 
