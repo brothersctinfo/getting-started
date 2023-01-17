@@ -13,7 +13,7 @@
 #       with:
 #         push: false
 
-name: docker-build
+  name: docker-build
   on:
     push:
       branches:
