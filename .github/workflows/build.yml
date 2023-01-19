@@ -52,7 +52,7 @@
           id: versioning
           uses: PaulHatch/semantic-version@v4.0.2
           with:
-            branch: main
+            branch: master
             tag_prefix: "v"
             major_pattern: "BREAKING CHANGE:"
             minor_pattern: "feat:"
@@ -106,7 +106,7 @@
           if: ${{ !startsWith(github.ref, 'refs/tags/') }}
           uses: actions/create-release@v1
           env:
-            GITHUB_TOKEN: ${{ env.JFROG_TOKEN }}
+            JFROG_TOKEN: ${{ env.JFROG_TOKEN }}
           with:
             tag_name: ${{ steps.versioning.outputs.version }}
             release_name: ${{ steps.versioning.outputs.version }}
