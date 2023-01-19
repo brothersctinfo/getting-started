@@ -1,0 +1,56 @@
+name: CI
+on:
+  push:
+    branches:
+      - master
+
+env:
+  JROG_USERNAME: ${{ secrets.JFROG_USERNAME }}
+  REGISTERY: ${{ secrets.JFROG_URL }}
+  JFROG_PASSWORD: ${{ secrets.JFROG_PASSWORD }}
+  JFROG_URL: ${{ secrets.JFROG_URL }}
+  JFROG_TOKEN: ${{ secrets.JFROG_TOKEN }}
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          # fetch all commits
+          fetch-depth: 0
+      
+      - name: Semantic Versioning
+        id: versioning
+        uses: PaulHatch/semantic-version@v4.0.2
+        with:
+          branch: master
+          tag_prefix: "v"
+          major_pattern: "BREAKING CHANGE:"
+          minor_pattern: "feat:"
+          format: "v${major}.${minor}.${patch}-prerelease${increment}"
+      
+      - name: Log into Artifactory
+        uses: docker/login-action@v1
+        with:
+          username: ${{ env.JROG_USERNAME }}
+          password: ${{ env.JFROG_PASSWORD }}
+
+       - name: Build and Push
+         uses: docker/build-push-action@v2
+         with:
+           context: .
+           push: true
+           tags: ${{ env.JFROG_URL }}:latest,${{ env.JFROG_URL }}:${{ steps.versioning.outputs.version }}
+        
+        - name: Create Release
+          if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+          uses: actions/create-release@v1
+          env:
+            JFROG_PASSWORD: ${{ env.JFROG_TOKEN }}
+          with:
+            tag_name: ${{ steps.versioning.outputs.vesion }}
+            release_name: ${{ steps.versioning.outputs.version }}
+            prerelease: true
