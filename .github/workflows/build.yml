@@ -1,114 +1,114 @@
-# name: Build
-# on: [push, pull_request]
-# jobs:
-#   build:
-#     name: Build
-#     runs-on: ubuntu-latest
-#     steps:
-#     - uses: actions/checkout@v2
-#     - name: Set up Docker Buildx
-#       uses: docker/setup-buildx-action@v2
-#     - name: Build
-#       uses: docker/build-push-action@v3
-#       with:
-#         push: false
+# # name: Build
+# # on: [push, pull_request]
+# # jobs:
+# #   build:
+# #     name: Build
+# #     runs-on: ubuntu-latest
+# #     steps:
+# #     - uses: actions/checkout@v2
+# #     - name: Set up Docker Buildx
+# #       uses: docker/setup-buildx-action@v2
+# #     - name: Build
+# #       uses: docker/build-push-action@v3
+# #       with:
+# #         push: false
 
-  name: docker-build
-  on:
-    push:
-      branches:
-        - 'master'
-      tags:
-        - 'v*.*.*'
-  jobs:
-    build:
-      runs-on: ubuntu-latest
-      env:
-        IMG_NAME: ${{ secrets.JFROG_URL }}/${{ secrets.JFROG_REPO }}/${{ secrets.IMG_NAME }} #${{ github.repository }} #${{ variables.IMG_NAME }}
-        JFROG_TOKEN: ${{ secrets.JFROG_TOKEN }}
+#   name: docker-build
+#   on:
+#     push:
+#       branches:
+#         - 'master'
+#       tags:
+#         - 'v*.*.*'
+#   jobs:
+#     build:
+#       runs-on: ubuntu-latest
+#       env:
+#         IMG_NAME: ${{ secrets.JFROG_URL }}/${{ secrets.JFROG_REPO }}/${{ secrets.IMG_NAME }} #${{ github.repository }} #${{ variables.IMG_NAME }}
+#         JFROG_TOKEN: ${{ secrets.JFROG_TOKEN }}
 
-      steps:
-        -
-          name: Checkout 
-          uses: actions/checkout@v2
+#       steps:
+#         -
+#           name: Checkout 
+#           uses: actions/checkout@v2
         
-        # -
-        #   name: Docker metadata
-        #   id: meta
-        #   uses: docker/metadata-action@v3
-        #   with:
-        #     images: |
-        #       ${{ env.IMG_NAME }}
-        #     tags: |
-        #       type=schedule
-        #       type=ref,event=branch
-        #       type=ref,event=pr
-        #       type=semver,pattern={{version}}
-        #       type=semver,pattern={{major}}.{{minor}}
-        #       type=semver,pattern={{major}}
-        #       type=sha
-        -
-          name: Semantic versioning
-          id: versioning
-          uses: PaulHatch/semantic-version@v4.0.2
-          with:
-            branch: master
-            tag_prefix: "v"
-            major_pattern: "BREAKING CHANGE:"
-            minor_pattern: "feat:"
-            format: "v${major}.${minor}.${patch}-prerelease${increment}"
-        -
-          name: Login to Jfrog artifactory
-          uses: docker/login-action@v1
-          with:
-            registry: ${{ secrets.JFROG_URL }}
-            username: ${{ secrets.JFROG_USERNAME }}
-            password: ${{ secrets.JFROG_PASSWORD }}
-        -
-          name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v1
-        # -
-        #   name: Build and push
-        #   uses: docker/build-push-action@v2
-        #   with:
-        #     context: .
-        #     file: ./Dockerfile
-        #     push: true
-        #     tags: ${{ secrets.JFROG_URL }}/$IMG_NAME:latest
-        # -
-        #   name: Build and push Docker image
-        #   uses: docker/build-push-action@v2
-        #   with:
-        #     context: .
-        #     push: ${{ github.event.base_ref =='refs/heads/master' && github.ref_type == 'tag' && !startsWith(github.ref, 'refs/tags/v0.')}}
-        #     tags: ${{ steps.metadata.outputs.tags }}
-        #     labels: ${{ steps.metadata.outputs.labels }}
-        # -
-        #   name: Build and push
-        #   uses: docker/build-push-action@v2
-        #   with:
-        #     context: .
-        #     file: ./Dockerfile
-        #     platforms: linux/amd64,linux/arm/v7
-        #     push: ${{ github.event_name != 'pull_request' }}
-        #     tags: ${{ steps.meta.outputs.tags }}
-        #     labels: ${{ steps.meta.outputs.labels }}
+#         # -
+#         #   name: Docker metadata
+#         #   id: meta
+#         #   uses: docker/metadata-action@v3
+#         #   with:
+#         #     images: |
+#         #       ${{ env.IMG_NAME }}
+#         #     tags: |
+#         #       type=schedule
+#         #       type=ref,event=branch
+#         #       type=ref,event=pr
+#         #       type=semver,pattern={{version}}
+#         #       type=semver,pattern={{major}}.{{minor}}
+#         #       type=semver,pattern={{major}}
+#         #       type=sha
+#         -
+#           name: Semantic versioning
+#           id: versioning
+#           uses: PaulHatch/semantic-version@v4.0.2
+#           with:
+#             branch: master
+#             tag_prefix: "v"
+#             major_pattern: "BREAKING CHANGE:"
+#             minor_pattern: "feat:"
+#             format: "v${major}.${minor}.${patch}-prerelease${increment}"
+#         -
+#           name: Login to Jfrog artifactory
+#           uses: docker/login-action@v1
+#           with:
+#             registry: ${{ secrets.JFROG_URL }}
+#             username: ${{ secrets.JFROG_USERNAME }}
+#             password: ${{ secrets.JFROG_PASSWORD }}
+#         -
+#           name: Set up Docker Buildx
+#           uses: docker/setup-buildx-action@v1
+#         # -
+#         #   name: Build and push
+#         #   uses: docker/build-push-action@v2
+#         #   with:
+#         #     context: .
+#         #     file: ./Dockerfile
+#         #     push: true
+#         #     tags: ${{ secrets.JFROG_URL }}/$IMG_NAME:latest
+#         # -
+#         #   name: Build and push Docker image
+#         #   uses: docker/build-push-action@v2
+#         #   with:
+#         #     context: .
+#         #     push: ${{ github.event.base_ref =='refs/heads/master' && github.ref_type == 'tag' && !startsWith(github.ref, 'refs/tags/v0.')}}
+#         #     tags: ${{ steps.metadata.outputs.tags }}
+#         #     labels: ${{ steps.metadata.outputs.labels }}
+#         # -
+#         #   name: Build and push
+#         #   uses: docker/build-push-action@v2
+#         #   with:
+#         #     context: .
+#         #     file: ./Dockerfile
+#         #     platforms: linux/amd64,linux/arm/v7
+#         #     push: ${{ github.event_name != 'pull_request' }}
+#         #     tags: ${{ steps.meta.outputs.tags }}
+#         #     labels: ${{ steps.meta.outputs.labels }}
 
-        - 
-          name: Build and push
-          uses: docker/build-push-action@v2
-          with:
-            push: true
-            tags: ${{ secrets.JFROG_URL }}:latest,${{ secrets.JFROG_URL }}:${{ steps.versioning.outputs.version }}
+#         - 
+#           name: Build and push
+#           uses: docker/build-push-action@v2
+#           with:
+#             push: true
+#             tags: ${{ secrets.JFROG_URL }}:latest,${{ secrets.JFROG_URL }}:${{ steps.versioning.outputs.version }}
 
-        - 
-          name: Create Release
-          if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-          uses: actions/create-release@v1
-          env:
-            JFROG_TOKEN: ${{ env.JFROG_TOKEN }}
-          with:
-            tag_name: ${{ steps.versioning.outputs.version }}
-            release_name: ${{ steps.versioning.outputs.version }}
-            prerelease: true
+#         - 
+#           name: Create Release
+#           if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+#           uses: actions/create-release@v1
+#           env:
+#             JFROG_TOKEN: ${{ env.JFROG_TOKEN }}
+#           with:
+#             tag_name: ${{ steps.versioning.outputs.version }}
+#             release_name: ${{ steps.versioning.outputs.version }}
+#             prerelease: true
 
