@@ -32,4 +32,4 @@
             context: .
             file: ./Dockerfile
             push: true
-            tags:  ${{ secrets.JFROG_URL }}/${{ JFROG_REPO }}:${{ github.sha }}
+            tags:   ${{ secrets.JFROG_URL }}/${{ JFROG_REPO }}/create:${{ github.sha }}
