@@ -32,4 +32,4 @@
             context: .
             file: ./Dockerfile
             push: true
-            tags:  ${{ secrets.JFROG_URL }}/$IMG_NAME:${{ secrets.MAJOR }}-${{ github.sha }}
+            tags: brothersctus.jfrog.io/pipeline/jfrog:v1 # ${{ secrets.JFROG_URL }}/$IMG_NAME:${{ secrets.MAJOR }}-${{ github.sha }}
